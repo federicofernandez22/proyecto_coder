@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from AppCoder.models import Curso
 from django.http import HttpResponse
+from django.template import loader
 # Create your views here.
 
 def curso(self):
@@ -13,5 +14,14 @@ def curso(self):
 def profesores(self):
     profesor = "pagina de prfesor"
     return HttpResponse(profesor)
+
+def mi_plantilla(self):
+    plantilla = loader.get_template('plantilla.html')
+    documento = plantilla.render()
+    return HttpResponse(documento)
+    
+
+
+
 
 
