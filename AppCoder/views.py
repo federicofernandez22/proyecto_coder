@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from AppCoder.models import Curso
+from AppCoder.models import Curso, Profesor
 from django.template import loader
+from AppCoder.forms import CursoFormulario, ProfesorFormulario, EstudiantesFormulario, EntregablesFormulario
 # Create your views here.
 
 def curso(self):
@@ -30,8 +31,48 @@ def inicio(self):
     documento = plantilla.render()
     return HttpResponse(documento)
     
+def cursoFormulario(request):
+    if request.method == 'POST':
+        miFormulario = CursoFormulario(request.POST)
+        if miFormulario.is_valid():
+            informacion = miFormulario.cleaned_data
+        nombre = informacion['curso']
+        camada = informacion['camada']
+        curso = Curso(nombre=nombre,  camada=camada)
+        curso.save()
+        return render(request, 'AppCoder/inicio.html')
+    else:
+        miFormulario = CursoFormulario()
+
+    return render(request, 'AppCoder/cursoFormulario.html', {'miFormulario':miFormulario})
+
+def profesorFormulario(request):
+    if request.method == 'POST':
+        profFormulario = ProfesorFormulario(request.POST)
+        if profFormulario.is_valid():
+            informacion = profFormulario.cleaned_data
+        nombre = informacion['nombre']
+        apellido  = informacion['apellido']
+        email = informacion['email']
+        profesion = informacion['profesion']
+        profesores = Profesor(nombre=nombre,  apellido=apellido, email=email, profesion=profesion)
+        profesores.save()
+        return render(request, 'AppCoder/inicio.html')
+    else:
+        profFormulario = ProfesorFormulario()
+
+    return render(request, 'AppCoder/profesorFormulario.html', {'profFormulario':profFormulario})
 
 
+def busquedaCamada(request):
+    return render(request, 'AppCoder/busquedaCamada.html')
 
-
-
+def buscar(request):
+    #respuesta = f"Estoy buscando la comision {request.GET['camada']}"
+    if request.GET['camada']:
+        camada = request.GET['camada']
+        curso = Curso.objects.filter(camada=camada)
+        return render(request, 'AppCoder/resultadoBusqueda.html', {'cursos':cursos, 'camada':camada})
+    else:
+        respuesta = "No se ah ingresado ninguna comision"
+    return HttpResponse(respuesta)
