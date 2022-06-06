@@ -1,6 +1,7 @@
+from xmlrpc.client import boolean
 from django.http import HttpResponse
 from django.shortcuts import render
-from AppCoder.models import Curso, Profesor
+from AppCoder.models import Curso, Estudiante, Profesor, Entregable
 from django.template import loader
 from AppCoder.forms import CursoFormulario, ProfesorFormulario, EstudiantesFormulario, EntregablesFormulario
 # Create your views here.
@@ -62,6 +63,50 @@ def profesorFormulario(request):
         profFormulario = ProfesorFormulario()
 
     return render(request, 'AppCoder/profesorFormulario.html', {'profFormulario':profFormulario})
+
+def estudianteFormulario(request):
+    if request.method == 'POST':
+        estFormulario = estudianteFormulario(request.POST)
+        if profFormulario.is_valid():
+            informacion = estFormulario.cleaned_data
+        nombre = informacion['nombre']
+        apellido  = informacion['apellido']
+        email = informacion['email']
+        estudiantes = Estudiante(nombre=nombre,  apellido=apellido, email=email)
+        estudiantes.save()
+        return render(request, 'AppCoder/inicio.html')
+    else:
+        profFormulario = EstudiantesFormulario()
+
+    return render(request, 'AppCoder/estudianteFormulario.html', {'estfFormulario':estFormulario})
+
+
+def entregableFormulario(request):
+    if request.method == 'POST':
+        entrFormulario = entregableFormulario(request.POST)
+        if entrFormulario.is_valid():
+            informacion = entrFormulario.cleaned_data
+        nombre = informacion['nombre']
+        fechaDeEntrega = fechaDeEntrega['fechaDeEntrega']
+        entrega = entrega['entrega']
+        entrega = Entregable(nombre=nombre, fechaDeEntrega=fechaDeEntrega, entrega=entrega)
+        entrega.save()
+        return render(request, 'AppCoder/inicio.html')
+    else:
+        entrFormulario = EntregablesFormulario()
+
+    return render(request, 'AppCoder/entregableFormulario.html', {'entrFormulario':entrFormulario})
+
+    
+
+
+
+
+
+
+
+
+
 
 
 def busquedaCamada(request):
